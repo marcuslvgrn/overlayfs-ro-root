@@ -1,0 +1,22 @@
+#!/bin/sh
+if mount | grep -q 'overlay on /'; then
+echo "Syncing ramdisk to ro at `date`" >> /var/log/sync2ro.log
+echo "Remounting / rw..."
+mount -o remount,rw /mnt/root-ro
+echo "Syncing ramdisk to ro..."
+rsync -av \
+--delete-after \
+--exclude /etc/fstab --exclude /etc/mtab \
+--exclude /proc --exclude /sys --exclude /dev \
+--exclude '/mnt/**' \
+--exclude /run --exclude /tmp \
+--exclude /var/lib/lxcfs \
+/ /mnt/root-ro | tee -a /var/log/sync2ro.log
+#echo "Remounting / ro..."
+sync
+#sleep 5
+#remountro
+#Store complete log
+cp /var/log/sync2ro.log /mnt/root-ro/var/log/sync2ro.log
+fi
+echo "Done."
