@@ -1,0 +1,13 @@
+[Unit]
+Description=sync2ro
+DefaultDependencies=no
+Before=shutdown.target
+#Before=reboot.target shutdown.target
+#RequiresMountsFor=/ /mnt/root-ro /mnt/tmpfs
+
+[Service]
+Type=oneshot
+ExecStart=/root/bin/sync2ro
+
+[Install]
+WantedBy=reboot.target halt.target poweroff.target
